@@ -11,14 +11,12 @@ let package = Package(
     products: [
         .library(
             name: "SPMframework",
-            targets: ["SPMframework", "SenhasSecurity"]),
+            targets: ["SenhasSecurity"]),
     ],
     dependencies: [
         // Add your dependencies here
     ],
     targets: [
-        .target(
-            name: "SPMframework"),
         .binaryTarget(
             name: "SenhasSecurity",
             path: "./SenhasSecurity.xcframework"),
