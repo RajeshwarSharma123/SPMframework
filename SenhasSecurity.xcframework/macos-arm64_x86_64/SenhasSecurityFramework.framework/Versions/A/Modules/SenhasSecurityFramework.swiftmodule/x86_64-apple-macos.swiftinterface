@@ -1,0 +1,98 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)
+// swift-module-flags: -target x86_64-apple-macos12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name SenhasSecurityFramework
+import Cocoa
+import EndpointSecurity
+import Foundation
+@_exported import SenhasSecurityFramework
+import Swift
+import _Concurrency
+@objc public protocol AppCommunication {
+  @objc func sendEventToApp(newEvent event: Swift.String)
+}
+public struct SSEventDetail : Swift.Codable {
+  public var eventtype: Swift.String
+  public var processpath: Swift.String
+  public var pid: Swift.Int32
+  public var ppid: Swift.Int32
+  public var isplatform: Swift.Bool
+  public var timestamp: Swift.Int
+  public var username: Swift.String
+  public var signingid: Swift.String
+  public var props: [Swift.String : Swift.String]
+  public var description: Swift.String {
+    get
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public func enableSSFramework(completion: @escaping (SenhasSecurityFramework.SSEventDetail) -> Swift.Void) -> (client: SenhasSecurityFramework.EndpointSecurityClient, error: SenhasSecurityFramework.SSError)
+public func disableSSFramework(esclient: SenhasSecurityFramework.EndpointSecurityClient) -> SenhasSecurityFramework.SSError
+public func startSenhasSecurityClient() -> SenhasSecurityFramework.EndpointSecurityClient
+public func getUsername(id: Darwin.uid_t) -> Swift.String
+@objc public class EndpointSecurityClient : ObjectiveC.NSObject {
+  public var viewModel: SenhasSecurityFramework.EndPointSecurityVM!
+  public var callback: (SenhasSecurityFramework.SSEventDetail) -> Swift.Void
+  public init(completion: @escaping (SenhasSecurityFramework.SSEventDetail) -> Swift.Void)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers public class NetworkConnection : ObjectiveC.NSObject {
+  public var listener: Foundation.NSXPCListener?
+  public var currentConnection: Foundation.NSXPCConnection?
+  public static let shared: SenhasSecurityFramework.NetworkConnection
+  public var client: SenhasSecurityFramework.EndpointSecurityClient?
+  public func startListener(esclient: SenhasSecurityFramework.EndpointSecurityClient)
+  public func register(withExtension bundle: Foundation.Bundle, delegate: SenhasSecurityFramework.AppCommunication, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  public func updateBlackList(blockedItems: [Swift.String], delegate: SenhasSecurityFramework.AppCommunication)
+  public func getBlackList(delegate: SenhasSecurityFramework.AppCommunication, withData response: @escaping ([Swift.String]) -> Swift.Void)
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension SenhasSecurityFramework.NetworkConnection : Foundation.NSXPCListenerDelegate {
+  @objc dynamic public func listener(_: Foundation.NSXPCListener, shouldAcceptNewConnection newConnection: Foundation.NSXPCConnection) -> Swift.Bool
+}
+public enum ESClientError : Swift.Error {
+  case success
+  case failed
+  case noEntitlementsPermissions
+  case missingEntitlements
+  case alreadyEnabled
+  public static func == (a: SenhasSecurityFramework.ESClientError, b: SenhasSecurityFramework.ESClientError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum SSError : Swift.Error {
+  case success
+  case failed
+  case alreadyEnabled
+  case newClientError
+  case failedSubscription
+  public static func == (a: SenhasSecurityFramework.SSError, b: SenhasSecurityFramework.SSError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public protocol EndPointSecurity {
+  func startEventProducer() -> SenhasSecurityFramework.ESClientError
+  func updateSenhasBlacklist(blockedItems: [Swift.String])
+  func getSenhasBlacklist() -> [Swift.String]
+  func stopEventProducer()
+  func eventDispatcher(msg: Swift.UnsafePointer<EndpointSecurity.es_message_t>)
+}
+@_hasMissingDesignatedInitializers public class EndPointSecurityVM {
+  @objc deinit
+}
+extension SenhasSecurityFramework.EndPointSecurityVM : SenhasSecurityFramework.EndPointSecurity {
+  public func startEventProducer() -> SenhasSecurityFramework.ESClientError
+  public func updateSenhasBlacklist(blockedItems: [Swift.String])
+  public func getSenhasBlacklist() -> [Swift.String]
+  public func stopEventProducer()
+  public func eventDispatcher(msg: Swift.UnsafePointer<EndpointSecurity.es_message_t>)
+}
+extension SenhasSecurityFramework.ESClientError : Swift.Equatable {}
+extension SenhasSecurityFramework.ESClientError : Swift.Hashable {}
+extension SenhasSecurityFramework.SSError : Swift.Equatable {}
+extension SenhasSecurityFramework.SSError : Swift.Hashable {}

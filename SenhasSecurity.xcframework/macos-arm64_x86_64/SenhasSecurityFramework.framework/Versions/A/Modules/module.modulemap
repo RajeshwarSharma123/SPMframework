@@ -1,0 +1,11 @@
+framework module SenhasSecurityFramework {
+  umbrella header "SenhasSecurityFramework.h"
+
+  export *
+  module * { export * }
+}
+
+module SenhasSecurityFramework.Swift {
+    header "SenhasSecurityFramework-Swift.h"
+    requires objc
+}
